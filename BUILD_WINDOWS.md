@@ -1,12 +1,26 @@
 # Building "Absolute Reason" VST3 on Windows
 
-You need: **Visual Studio 2022** (free Community edition) with "Desktop development
-with C++", and **CMake** (install from cmake.org, or `winget install Kitware.CMake`).
+You need a C++ compiler — the **Visual Studio Build Tools** (free, much smaller
+than the full Visual Studio IDE), plus **CMake**.
+
+## Install (one time)
+
+In PowerShell or cmd:
+
+```
+winget install Microsoft.VisualStudio.2022.BuildTools
+```
+
+When the installer opens, tick **"Desktop development with C++"** and install.
+(If you'd rather do it silently: `winget install Microsoft.VisualStudio.2022.BuildTools --override "--wait --passive --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"`)
+
+Then: `winget install Kitware.CMake`
 
 ## Steps
 
-1. Extract the zip so the folder `vst3-absolute-reason` is on your machine.
-   It already contains JUCE 8.0.6 under `third_party/JUCE` — no download needed.
+1. Get the source — either clone the repo or use the zip:
+   - `git clone https://github.com/Protogenus/vst.git` (repo already contains JUCE 8.0.6 — no download needed), or
+   - extract `vst3-absolute-reason.zip` — same contents.
 
 2. Open "x64 Native Tools Command Prompt for VS 2022" and run:
 
