@@ -48,9 +48,10 @@ void AbsoluteReasonLookAndFeel::drawRotarySlider(juce::Graphics& g, int x, int y
 }
 
 AbsoluteReasonEditor::AbsoluteReasonEditor(AbsoluteReasonProcessor& p)
-    : AudioProcessorEditor(&p), proc(p) {
+    : AudioProcessorEditor(&p), proc(p),
+      keyboard(p.keyboardState, juce::MidiKeyboardComponent::horizontalKeyboard) {
     setLookAndFeel(&lookAndFeel);
-    setSize(660, 440);
+    setSize(660, 530);
 
     addAndMakeVisible(presetBox);
     presetBox.setJustificationType(juce::Justification::centredLeft);
@@ -93,6 +94,10 @@ AbsoluteReasonEditor::AbsoluteReasonEditor(AbsoluteReasonProcessor& p)
     slopeAttach = std::make_unique<
         juce::AudioProcessorValueTreeState::ComboBoxAttachment>(
             proc.apvts, "slope", slopeBox);
+
+    addAndMakeVisible(keyboard);
+    keyboard.setAvailableRange(24, 96);
+    keyboard.setLowestVisibleKey(36);
 }
 
 AbsoluteReasonEditor::~AbsoluteReasonEditor() {
@@ -155,4 +160,5 @@ void AbsoluteReasonEditor::resized() {
     prevPreset.setBounds(566, 18, 28, 28);
     nextPreset.setBounds(598, 18, 28, 28);
     slopeBox.setBounds(520, 330, 100, 24);
+    keyboard.setBounds(0, 450, getWidth(), 80);
 }

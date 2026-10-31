@@ -114,6 +114,9 @@ void AbsoluteReasonProcessor::processBlock(juce::AudioBuffer<float>& buffer,
     juce::ScopedNoDenormals noDenormals;
     const int numSamples = buffer.getNumSamples();
 
+    // Merge on-screen keyboard MIDI (standalone) into the block.
+    keyboardState.processNextMidiBuffer(midiMessages, 0, numSamples, true);
+
     if (dspParamsDirty) { syncEngineParams(); dspParamsDirty = false; }
     // Cheap per-block check: re-read the macro (most-performed param); full
     // sync happens via listener-free polling of a version counter is overkill —

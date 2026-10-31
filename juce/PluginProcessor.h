@@ -31,6 +31,7 @@ public:
     void setStateInformation(const void* data, int sizeInBytes) override;
 
     juce::AudioProcessorValueTreeState apvts;
+    juce::MidiKeyboardState keyboardState; // feeds the on-screen keyboard
 
     static juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
     void applyPreset(int index); // factory preset -> apvts

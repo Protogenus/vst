@@ -16,7 +16,7 @@ juce_add_plugin(AbsoluteReason
     BUNDLE_ID com.blackrivervisuals.absolutereason
     PLUGIN_MANUFACTURER_CODE BrRv
     PLUGIN_CODE AbRs
-    FORMATS VST3
+    FORMATS VST3 Standalone
     PRODUCT_NAME "Absolute Reason"
     DESCRIPTION "Growling detuned-saw instrument — reverse-engineered from Stereo Dancer 'Absolute Reason'."
     VERSION 1.0.0

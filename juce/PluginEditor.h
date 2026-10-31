@@ -25,6 +25,7 @@ private:
 
     juce::ComboBox presetBox;
     juce::TextButton prevPreset{"<"}, nextPreset{">"};
+    juce::MidiKeyboardComponent keyboard;
 
     struct Knob {
         std::unique_ptr<juce::Slider> slider;
