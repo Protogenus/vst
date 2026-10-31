@@ -3,6 +3,8 @@
 #pragma once
 #include "Voice.h"
 #include "Chorus.h"
+#include "Reverb.h"
+#include "Pump.h"
 #include "Smooth.h"
 #include <cmath>
 
@@ -22,6 +24,12 @@ struct Params {
     double forward       = 1.0;    // macro 0..1: cutoff + level
     double level         = 0.8;    // master
     double masterTuneCents = 0.0;
+    // FX (optional — all off at 0)
+    double verbMix       = 0.25;   // reverb send 0..1
+    double verbSize      = 0.65;   // room size 0..1
+    double verbDark      = 0.70;   // damping 0..1 (darkness)
+    double pumpAmt       = 0.25;   // pump depth 0..1
+    double pumpRateHz    = 2.2;    // pump rate
 };
 
 struct MidiEvent {
@@ -39,9 +47,12 @@ public:
         sr = sampleRate;
         for (auto& v : voices) v.setSampleRate(sampleRate);
         chorus.setSampleRate(sampleRate);
+        reverb.setSampleRate(sampleRate);
+        pump.setSampleRate(sampleRate);
         cutoffSm.setSampleRate(sampleRate); cutoffSm.setTimeMs(15);
         levelSm.setSampleRate(sampleRate);  levelSm.setTimeMs(15);
         detuneSm.setSampleRate(sampleRate); detuneSm.setTimeMs(30);
+        verbMixSm.setSampleRate(sampleRate); verbMixSm.setTimeMs(30);
         // snap smoothers to current params
         applyParamsToSmoothers(true);
     }
@@ -51,6 +62,11 @@ public:
         chorus.setRate(p.chorusRateHz);
         chorus.setDepth(p.chorusDepth);
         chorus.setMix(p.chorusMix);
+        reverb.setRoomSize(p.verbSize);
+        reverb.setDamp(p.verbDark);
+        reverb.setWet(1.0); // mix handled by verbMixSm
+        pump.setAmount(p.pumpAmt);
+        pump.setRate(p.pumpRateHz);
         applyParamsToSmoothers(false);
     }
     const Params& getParams() const { return params; }
@@ -105,6 +121,13 @@ public:
             mL *= 0.5; mR *= 0.5;
             double oL, oR;
             chorus.process(mL, mR, oL, oR);
+            // pump (rhythmic bus breathing), then dark reverb send
+            pump.process(oL, oR);
+            double wetL, wetR;
+            reverb.process(oL, oR, wetL, wetR);
+            double vmix = verbMixSm.process();
+            oL += wetL * vmix * 2.0;
+            oR += wetR * vmix * 2.0;
             outL[i] = (float)(oL * level);
             outR[i] = (float)(oR * level);
         }
@@ -120,9 +143,12 @@ private:
         if (snap) {
             cutoffSm.snapTo(effCutoff); levelSm.snapTo(effLevel);
             detuneSm.snapTo(params.detuneCents);
+            verbMixSm.snapTo(params.verbMix);
+            pump.snap();
         } else {
             cutoffSm.setTarget(effCutoff); levelSm.setTarget(effLevel);
             detuneSm.setTarget(params.detuneCents);
+            verbMixSm.setTarget(params.verbMix);
         }
     }
 
@@ -140,7 +166,9 @@ private:
     Params params;
     Voice voices[MaxVoices];
     Chorus chorus;
-    Smoother cutoffSm, levelSm, detuneSm;
+    Reverb reverb;
+    Pump pump;
+    Smoother cutoffSm, levelSm, detuneSm, verbMixSm;
 };
 
 } // namespace absynth

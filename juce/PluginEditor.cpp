@@ -51,7 +51,7 @@ AbsoluteReasonEditor::AbsoluteReasonEditor(AbsoluteReasonProcessor& p)
     : AudioProcessorEditor(&p), proc(p),
       keyboard(p.keyboardState, juce::MidiKeyboardComponent::horizontalKeyboard) {
     setLookAndFeel(&lookAndFeel);
-    setSize(660, 530);
+    setSize(660, 620);
 
     addAndMakeVisible(presetBox);
     presetBox.setJustificationType(juce::Justification::centredLeft);
@@ -84,6 +84,14 @@ AbsoluteReasonEditor::AbsoluteReasonEditor(AbsoluteReasonProcessor& p)
     addKnob("chorusRate","Ch Rate",kx + dx,   ky + dy*2);
     addKnob("level",   "Level",   kx + dx*2,  ky + dy*2);
     addKnob("tune",    "Tune",    66, 300, 64);
+
+    // FX section — optional, all silent at 0
+    const int fx = 436;
+    addKnob("verbMix",  "Verb Mix",  90, fx);
+    addKnob("verbSize", "Verb Size", 186, fx);
+    addKnob("verbDark", "Verb Dark", 282, fx);
+    addKnob("pumpAmt",  "Pump",      378, fx);
+    addKnob("pumpRate", "Pump Rate", 474, fx);
 
     addAndMakeVisible(slopeBox);
     slopeBox.addItemList(proc.apvts.getParameter("slope")->getAllValueStrings(), 1);
@@ -148,6 +156,7 @@ void AbsoluteReasonEditor::paint(juce::Graphics& g) {
     g.drawText("OSC", 230, 78, 90, 14, juce::Justification::left);
     g.drawText("FILTER", 326, 78, 90, 14, juce::Justification::left);
     g.drawText("AMP / SPACE / MASTER", 230, 278, 280, 14, juce::Justification::left);
+    g.drawText("FX — optional, zero is off", 90, 416, 480, 14, juce::Justification::left);
     // macro caption
     g.setColour(juce::Colour(0xff9aa0ab));
     g.setFont(juce::Font(11.0f));
@@ -160,5 +169,5 @@ void AbsoluteReasonEditor::resized() {
     prevPreset.setBounds(566, 18, 28, 28);
     nextPreset.setBounds(598, 18, 28, 28);
     slopeBox.setBounds(520, 330, 100, 24);
-    keyboard.setBounds(0, 450, getWidth(), 80);
+    keyboard.setBounds(0, 548, getWidth(), 72);
 }

@@ -44,6 +44,14 @@ AbsoluteReasonProcessor::createParameterLayout() {
     layout.add(std::make_unique<juce::AudioParameterFloat>(
         "tune", "Master Tune",
         juce::NormalisableRange<float>(-50.0f, 50.0f), 0.0f));
+    // FX — optional, all silent at 0
+    layout.add(pct("verbMix", "Reverb Mix", 0.25f));
+    layout.add(pct("verbSize", "Reverb Size", 0.65f));
+    layout.add(pct("verbDark", "Reverb Dark", 0.70f));
+    layout.add(pct("pumpAmt", "Pump Amount", 0.25f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>(
+        "pumpRate", "Pump Rate",
+        juce::NormalisableRange<float>(0.5f, 8.0f, 0.0f, 0.5f), 2.2f));
     return layout;
 }
 
@@ -52,15 +60,21 @@ void AbsoluteReasonProcessor::buildFactoryPresets() {
         {"Absolute Reason Growl", {{"forward",1.0f},{"detune",20.0f},{"cutoff",1000.0f},
             {"resonance",0.0f},{"slope",1.0f},{"attack",8.0f},{"release",90.0f},
             {"spread",0.85f},{"chorusDepth",0.35f},{"chorusRate",0.35f},
-            {"level",0.8f},{"tune",0.0f}}},
+            {"level",0.8f},{"tune",0.0f},
+            {"verbMix",0.25f},{"verbSize",0.65f},{"verbDark",0.70f},
+            {"pumpAmt",0.25f},{"pumpRate",2.2f}}},
         {"Background Dub", {{"forward",0.25f},{"detune",20.0f},{"cutoff",1000.0f},
             {"resonance",0.0f},{"slope",1.0f},{"attack",8.0f},{"release",90.0f},
             {"spread",0.85f},{"chorusDepth",0.35f},{"chorusRate",0.35f},
-            {"level",0.8f},{"tune",0.0f}}},
+            {"level",0.8f},{"tune",0.0f},
+            {"verbMix",0.35f},{"verbSize",0.75f},{"verbDark",0.80f},
+            {"pumpAmt",0.25f},{"pumpRate",2.2f}}},
         {"Bright Stab", {{"forward",1.0f},{"detune",28.0f},{"cutoff",2400.0f},
             {"resonance",0.15f},{"slope",1.0f},{"attack",4.0f},{"release",140.0f},
             {"spread",0.9f},{"chorusDepth",0.5f},{"chorusRate",0.5f},
-            {"level",0.8f},{"tune",0.0f}}},
+            {"level",0.8f},{"tune",0.0f},
+            {"verbMix",0.15f},{"verbSize",0.5f},{"verbDark",0.5f},
+            {"pumpAmt",0.0f},{"pumpRate",2.2f}}},
     };
 }
 
@@ -106,6 +120,11 @@ void AbsoluteReasonProcessor::syncEngineParams() {
     p.chorusMix  = 0.22;
     p.level      = getF("level");
     p.masterTuneCents = getF("tune");
+    p.verbMix    = getF("verbMix");
+    p.verbSize   = getF("verbSize");
+    p.verbDark   = getF("verbDark");
+    p.pumpAmt    = getF("pumpAmt");
+    p.pumpRateHz = getF("pumpRate");
     engine.setParams(p);
 }
 
