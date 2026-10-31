@@ -77,6 +77,7 @@ AbsoluteReasonEditor::AbsoluteReasonEditor(AbsoluteReasonProcessor& p)
     addKnob("detune",  "Detune",  kx,         ky);
     addKnob("cutoff",  "Cutoff",  kx + dx,    ky);
     addKnob("resonance","Reso",   kx + dx*2,  ky);
+    addKnob("growl",   "Growl",   kx + dx*3,  ky);
     addKnob("attack",  "Attack",  kx,         ky + dy);
     addKnob("release", "Release", kx + dx,    ky + dy);
     addKnob("spread",  "Spread",  kx + dx*2,  ky + dy);

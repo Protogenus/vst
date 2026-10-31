@@ -24,6 +24,7 @@ struct Params {
     double forward       = 1.0;    // macro 0..1: cutoff + level
     double level         = 0.8;    // master
     double masterTuneCents = 0.0;
+    double drive         = 0.75;   // waveshaper growl 0..1 (0 = clean bypass)
     // FX (optional — all off at 0)
     double verbMix       = 0.25;   // reverb send 0..1
     double verbSize      = 0.65;   // room size 0..1
@@ -67,6 +68,7 @@ public:
         reverb.setWet(1.0); // mix handled by verbMixSm
         pump.setAmount(p.pumpAmt);
         pump.setRate(p.pumpRateHz);
+        for (auto& v : voices) v.setDrive(p.drive);
         applyParamsToSmoothers(false);
     }
     const Params& getParams() const { return params; }

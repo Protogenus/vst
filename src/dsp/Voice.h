@@ -51,10 +51,21 @@ public:
         // oscA leans left, oscB leans right; spread 0 = mono, 1 = hard split
         double l = a * (0.5 + 0.5 * panSpread) + b * (0.5 - 0.5 * panSpread);
         double r = b * (0.5 + 0.5 * panSpread) + a * (0.5 - 0.5 * panSpread);
+        // drive: tanh waveshaper, the growl. drive=0 is true bypass.
+        if (drive > 0.001) {
+            double k = 1.0 + drive * 15.0;
+            double norm = std::tanh(k);
+            double dl = std::tanh(l * k) / norm;
+            double dr = std::tanh(r * k) / norm;
+            l += drive * (dl - l);
+            r += drive * (dr - r);
+        }
         outL = filtL.process(l) * env;
         outR = filtR.process(r) * env;
         ++age;
     }
+
+    void setDrive(double d) { drive = d < 0 ? 0 : (d > 1 ? 1 : d); }
 
     void kill() { active = false; amp.reset(); }
 
@@ -62,6 +73,7 @@ private:
     SawOsc oscA, oscB;
     LowpassFilter filtL, filtR;
     ADSR amp;
+    double drive = 0.0;
     bool active = false;
     int note = -1;
     unsigned long age = 0;
