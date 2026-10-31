@@ -1,6 +1,7 @@
 // Chorus.h — simple stereo chorus, fixed buffers (no audio-thread allocation).
 #pragma once
 #include <cmath>
+#include "DspCommon.h"
 
 namespace absynth {
 
@@ -30,9 +31,9 @@ public:
 
         // LFOs in antiphase for L/R
         double lfoL = std::sin(lfoPhase);
-        double lfoR = std::sin(lfoPhase + M_PI);
+        double lfoR = std::sin(lfoPhase + kPi);
         lfoPhase += lfoInc;
-        if (lfoPhase >= 2.0 * M_PI) lfoPhase -= 2.0 * M_PI;
+        if (lfoPhase >= 2.0 * kPi) lfoPhase -= 2.0 * kPi;
 
         double baseMs = 11.0;
         double modMs = 5.0 * depth;
@@ -57,7 +58,7 @@ private:
         double frac = rp - i0;
         return buf[i0] * (1.0 - frac) + buf[i1] * frac;
     }
-    void updateLfoInc() { lfoInc = 2.0 * M_PI * rate / sampleRate; }
+    void updateLfoInc() { lfoInc = 2.0 * kPi * rate / sampleRate; }
 
     double sampleRate = 48000.0;
     double rate = 0.3, depth = 0.3, mix = 0.25;

@@ -2,6 +2,7 @@
 // Stable at all cutoffs, no denormals (tiny DC offset not needed; states decay).
 #pragma once
 #include <cmath>
+#include "DspCommon.h"
 
 namespace absynth {
 
@@ -31,7 +32,7 @@ public:
 
 private:
     void update() {
-        double g = std::tan(M_PI * cutoff / sampleRate);
+        double g = std::tan(kPi * cutoff / sampleRate);
         double k = 1.0 / Q;
         a1 = 1.0 / (1.0 + g * (g + k));
         a2 = g * a1;
